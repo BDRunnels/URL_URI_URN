@@ -1,15 +1,11 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
 
 import static java.net.HttpURLConnection.HTTP_OK;
 
-public class HttpExample {
+public class HttpExamplePost {
     public static void main(String[] args) {
 
         try {
@@ -20,6 +16,17 @@ public class HttpExample {
             connection.setRequestProperty("User-Agent", "Chrome");
             connection.setRequestProperty("Accept", "application/json, text/html");
             connection.setReadTimeout(30000); // within 30 seconds before timeout
+
+            connection.setDoOutput(true);
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            String parameters = "first=Joe&last=Smith";
+            int length = parameters.getBytes().length;
+            connection.setRequestProperty("Content-Length", String.valueOf(length));
+
+            DataOutputStream output = new DataOutputStream(connection.getOutputStream());
+            output.writeBytes(parameters);
+            output.flush();
+            output.close();
 
             int responseCode = connection.getResponseCode();
             System.out.printf("Response code: %d%n", responseCode);
